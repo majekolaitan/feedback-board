@@ -1,5 +1,6 @@
 import React from "react";
 import { Feedback } from "@/types";
+import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 
 interface FeedbackCardProps {
   feedback: Feedback;
@@ -25,18 +26,23 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({
       }`}
     >
       <div className="flex justify-between items-start mb-3">
-        <h3 className="text-lg font-semibold text-gray-800">
+        <h3 className="text-lg font-semibold text-gray-800 break-words">
           {feedback.title}
         </h3>
         {isAdmin && (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0 ml-2">
             <span
-              className={`px-2 py-1 rounded-full text-xs font-medium ${
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                 feedback.is_reviewed
                   ? "bg-green-100 text-green-800"
                   : "bg-yellow-100 text-yellow-800"
               }`}
             >
+              {feedback.is_reviewed ? (
+                <CheckCircleIcon className="h-4 w-4 mr-1" />
+              ) : (
+                <ClockIcon className="h-4 w-4 mr-1" />
+              )}
               {feedback.is_reviewed ? "Reviewed" : "Pending"}
             </span>
             <button
@@ -53,11 +59,13 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({
         )}
       </div>
 
-      <p className="text-gray-600 mb-4">{feedback.content}</p>
+      <p className="text-gray-600 mb-4 whitespace-pre-wrap break-words">
+        {feedback.content}
+      </p>
 
       <div className="text-sm text-gray-500">
         <p>Submitted: {new Date(feedback.created_at).toLocaleDateString()}</p>
-        {isAdmin && feedback.reviewed_at && (
+        {isAdmin && feedback.is_reviewed && feedback.reviewed_at && (
           <p>Reviewed: {new Date(feedback.reviewed_at).toLocaleDateString()}</p>
         )}
       </div>

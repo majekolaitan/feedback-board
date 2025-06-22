@@ -13,7 +13,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-  if (config.method !== "get") {
+  if (config.method !== "get" && config.method !== "GET") {
     try {
       const tokenResponse = await axios.get(`${API_BASE_URL}/csrf/`, {
         withCredentials: true,
@@ -30,8 +30,10 @@ api.interceptors.request.use(async (config) => {
 });
 
 export const feedbackApi = {
-  getPublicFeedback: async (): Promise<ApiResponse<Feedback>> => {
-    const response = await api.get("/feedback/");
+  getPublicFeedback: async (
+    page: number = 1
+  ): Promise<ApiResponse<Feedback>> => {
+    const response = await api.get(`/feedback/?page=${page}`);
     return response.data;
   },
 
@@ -39,8 +41,15 @@ export const feedbackApi = {
     title: string;
     content: string;
   }): Promise<Feedback> => {
-    const response = await api.post("/feedback/", feedback);
-    return response.data;
+    try {
+      const response = await api.post("/feedback/", feedback);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        throw error.response.data;
+      }
+      throw error;
+    }
   },
 };
 
@@ -64,8 +73,31 @@ export const authApi = {
 };
 
 export const adminApi = {
-  getAllFeedback: async (): Promise<ApiResponse<Feedback>> => {
-    const response = await api.get("/admin/feedback/");
+  getAllFeedback: async (
+    params: {
+      page?: number;
+      search?: string;
+      is_reviewed?: string | boolean;
+    } = {}
+  ): Promise<ApiResponse<Feedback>> => {
+    const queryParams = new URLSearchParams();
+    if (params.page) queryParams.append("page", params.page.toString());
+    if (params.search) queryParams.append("search", params.search);
+
+    if (
+      params.is_reviewed !== undefined &&
+      params.is_reviewed !== null &&
+      params.is_reviewed !== "all"
+    ) {
+      queryParams.append(
+        "is_reviewed",
+        String(params.is_reviewed === true || params.is_reviewed === "true")
+      );
+    }
+
+    const response = await api.get(
+      `/admin/feedback/?${queryParams.toString()}`
+    );
     return response.data;
   },
 
