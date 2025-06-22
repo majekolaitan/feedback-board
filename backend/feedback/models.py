@@ -5,7 +5,7 @@ class Feedback(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     is_reviewed = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
     reviewed_at = models.DateTimeField(null=True, blank=True)
     
     class Meta:

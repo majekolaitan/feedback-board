@@ -1,12 +1,13 @@
 from rest_framework import generics, status
-from rest_framework.decorators import api_view, permission_classes # Now fully used
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from .models import Feedback
-from .serializers import FeedbackSerializer, AdminFeedbackSerializer, LoginSerializer 
+from .serializers import FeedbackSerializer, AdminFeedbackSerializer, LoginSerializer
+from rest_framework.permissions import IsAdminUser
 
 class FeedbackListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
@@ -58,27 +59,15 @@ def check_auth(request):
     return Response({'authenticated': False})
 
 class AdminFeedbackListView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
     serializer_class = AdminFeedbackSerializer
     queryset = Feedback.objects.all()
-    
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return Response({'detail': 'Admin access required.'}, 
-                          status=status.HTTP_403_FORBIDDEN)
-        return super().dispatch(request, *args, **kwargs)
 
 class AdminFeedbackUpdateView(generics.UpdateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
     serializer_class = AdminFeedbackSerializer
     queryset = Feedback.objects.all()
     http_method_names = ['patch']
-    
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return Response({'detail': 'Admin access required.'}, 
-                          status=status.HTTP_403_FORBIDDEN)
-        return super().dispatch(request, *args, **kwargs)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
