@@ -7,17 +7,16 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from .models import Feedback
 from .serializers import FeedbackSerializer, AdminFeedbackSerializer, LoginSerializer
-from rest_framework.permissions import IsAdminUser
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 class FeedbackListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
-    
+    serializer_class = FeedbackSerializer
+
     def get_queryset(self):
-        return Feedback.objects.filter(is_reviewed=True)
-    
-    def get_serializer_class(self):
-        return FeedbackSerializer
-    
+        return Feedback.objects.filter(is_reviewed=True).order_by('-created_at')
+
     def perform_create(self, serializer):
         serializer.save()
 
@@ -59,15 +58,31 @@ def check_auth(request):
     return Response({'authenticated': False})
 
 class AdminFeedbackListView(generics.ListAPIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
     serializer_class = AdminFeedbackSerializer
-    queryset = Feedback.objects.all()
+    queryset = Feedback.objects.all().order_by('-created_at')
+    
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ['title', 'content']
+    filterset_fields = ['is_reviewed']
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return Response({'detail': 'Admin access required.'}, 
+                          status=status.HTTP_403_FORBIDDEN)
+        return super().dispatch(request, *args, **kwargs)
 
 class AdminFeedbackUpdateView(generics.UpdateAPIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
     serializer_class = AdminFeedbackSerializer
     queryset = Feedback.objects.all()
     http_method_names = ['patch']
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return Response({'detail': 'Admin access required.'}, 
+                          status=status.HTTP_403_FORBIDDEN)
+        return super().dispatch(request, *args, **kwargs)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
