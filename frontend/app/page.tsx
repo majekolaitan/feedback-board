@@ -2,13 +2,35 @@
 
 import React, { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
+import FeedbackCard from "@/components/FeedbackCard";
 import FeedbackForm from "@/components/FeedbackForm";
 import { feedbackApi } from "@/lib/api";
+import { Feedback } from "@/types";
 
 export default function HomePage() {
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    loadFeedbacks();
+  }, []);
+
+  const loadFeedbacks = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const response = await feedbackApi.getPublicFeedback();
+      setFeedbacks(response.results || []);
+    } catch (err) {
+      console.error("Failed to load feedback:", err);
+      setError("Failed to load feedback");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmitFeedback = async (feedbackData: {
     title: string;
@@ -25,8 +47,8 @@ export default function HomePage() {
       );
       setTimeout(() => setSuccess(""), 5000);
     } catch (err) {
-      setError("Failed to submit feedback. Please try again.");
       console.error("Submission error:", err);
+      setError("Failed to submit feedback. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -70,9 +92,25 @@ export default function HomePage() {
           <h2 className="text-2xl font-semibold text-gray-800">
             Recent Feedback
           </h2>
-          <div className="text-center py-8">
-            <p className="text-gray-600">Feedback list will appear here.</p>
-          </div>
+
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <p className="mt-2 text-gray-600">Loading feedback...</p>
+            </div>
+          ) : error ? null : feedbacks.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-600">
+                No feedback has been published yet.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {feedbacks.map((feedback) => (
+                <FeedbackCard key={feedback.id} feedback={feedback} />
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>
