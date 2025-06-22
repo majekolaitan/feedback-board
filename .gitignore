@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+node_modules
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django specific
+*.log
+*.pot
+*.pyc
+db.sqlite3
+
+# Environments
+.env
+venv/
+.env.*
+
+# IDEs/editors
+.vscode/
+.idea/
+
+# Migrations (optional)
+*/migrations/__pycache__/
+*/migrations/*.pyc
