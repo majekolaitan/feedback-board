@@ -1,0 +1,29 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+local_settings.py
+db.sqlite3  # Optional: if you want the image to always start with a fresh DB.
+            # For dev, usually mounted from host, so this line might be commented out or removed
+            # if you want the local db.sqlite3 to be copied as a starting point if no volume is mounted.
+            # Given the volume mount `./backend:/app`, the host's db.sqlite3 will be used anyway.
+            # Adding it here ensures COPY . . doesn't bring a host db.sqlite3 into the image layers.
+.git/
+.gitignore
+*.swp
+*.swo
+*.swn

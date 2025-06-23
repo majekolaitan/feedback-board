@@ -1,0 +1,59 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: feedback_board_backend
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=feedback_board.settings
+      # Add other backend environment variables if needed
+    # depends_on:
+    # - db Example if you add a separate DB service later; remove if not used.
+    # For SQLite, this isn't strictly necessary for service startup order
+    # but good practice if you switch to Postgres/MySQL.
+    # For now, as SQLite is used, and it's within the backend volume,
+    # this `depends_on` isn't critical but doesn't harm.
+    # Let's remove it for SQLite to keep it minimal.
+    # depends_on: {} # No explicit dependency for SQLite setup
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: feedback_board_frontend
+    command: npm run dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Anonymous volume to prevent host node_modules from overwriting container's
+      - /app/.next # Anonymous volume for .next folder
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+      - CHOKIDAR_USEPOLLING=true # Helps with hot-reloading in some Docker environments
+    depends_on:
+      - backend
+# If you were using a separate database like PostgreSQL:
+# volumes:
+#   postgres_data:
+
+# services:
+#   db:
+#     image: postgres:13
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data/
+#     environment:
+#       - POSTGRES_USER=youruser
+#       - POSTGRES_PASSWORD=yourpassword
+#       - POSTGRES_DB=yourdb
+#     ports:
+#       - "5432:5432"
+# (and then backend would depend_on: db and configure DATABASES setting)
