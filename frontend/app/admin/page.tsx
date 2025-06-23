@@ -19,60 +19,106 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalFeedbacks, setTotalFeedbacks] = useState(0);
+
+  const [grandTotalSubmissions, setGrandTotalSubmissions] = useState(0);
+  const [totalReviewedGlobally, setTotalReviewedGlobally] = useState(0);
+  const [totalPendingGlobally, setTotalPendingGlobally] = useState(0);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   const totalPages = useMemo(
     () => Math.ceil(totalFeedbacks / ITEMS_PER_PAGE),
     [totalFeedbacks]
   );
 
-  const loadAllFeedbacks = useCallback(async () => {
+  const loadFeedbacksForPage = useCallback(
+    async (pageToFetch: number) => {
+      if (!isAuthenticated || !user?.is_staff) return;
+
+      setLoading(true);
+      setError("");
+      try {
+        const params: { page: number; search?: string; is_reviewed?: string } =
+          {
+            page: pageToFetch,
+          };
+        if (searchTerm.trim()) params.search = searchTerm.trim();
+        if (filterStatus !== "all") params.is_reviewed = filterStatus;
+
+        const response = await adminApi.getAllFeedback(params);
+        setFeedbacks(response.results || []);
+        setTotalFeedbacks(response.count || 0);
+      } catch (err: any) {
+        console.error("Failed to load feedback list:", err);
+        setError(
+          err.response?.data?.detail ||
+            "Failed to load feedback. Ensure you have admin rights."
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [isAuthenticated, user?.is_staff, searchTerm, filterStatus]
+  );
+
+  const loadGlobalStats = useCallback(async () => {
     if (!isAuthenticated || !user?.is_staff) return;
-
-    setLoading(true);
-    setError("");
+    setStatsLoading(true);
     try {
-      const params: { page: number; search?: string; is_reviewed?: string } = {
-        page: currentPage,
-      };
-      if (searchTerm.trim()) params.search = searchTerm.trim();
-      if (filterStatus !== "all") params.is_reviewed = filterStatus;
+      const [reviewedResponse, pendingResponse, allSubmissionsResponse] =
+        await Promise.all([
+          adminApi.getAllFeedback({ is_reviewed: "true", page: 1 }),
+          adminApi.getAllFeedback({ is_reviewed: "false", page: 1 }),
+          adminApi.getAllFeedback({ page: 1 }),
+        ]);
 
-      const response = await adminApi.getAllFeedback(params);
-      setFeedbacks(response.results || []);
-      setTotalFeedbacks(response.count || 0);
-    } catch (err: any) {
-      console.error("Failed to load feedback:", err);
-      setError(
-        err.response?.data?.detail ||
-          "Failed to load feedback. Ensure you have admin rights."
-      );
+      setTotalReviewedGlobally(reviewedResponse.count || 0);
+      setTotalPendingGlobally(pendingResponse.count || 0);
+      setGrandTotalSubmissions(allSubmissionsResponse.count || 0);
+    } catch (err) {
+      console.error("Failed to load global feedback stats:", err);
     } finally {
-      setLoading(false);
+      setStatsLoading(false);
     }
-  }, [isAuthenticated, user?.is_staff, currentPage, searchTerm, filterStatus]);
+  }, [isAuthenticated, user?.is_staff]);
 
   useEffect(() => {
     if (!authIsLoading) {
       if (!isAuthenticated || !user?.is_staff) {
         router.push("/login");
       } else {
-        loadAllFeedbacks();
+        loadGlobalStats();
       }
     }
+  }, [isAuthenticated, user?.is_staff, authIsLoading, router, loadGlobalStats]);
+
+  useEffect(() => {
+    if (isAuthenticated && user?.is_staff && !authIsLoading) {
+      loadFeedbacksForPage(currentPage);
+    }
   }, [
+    currentPage,
+    loadFeedbacksForPage,
     isAuthenticated,
     user?.is_staff,
     authIsLoading,
-    router,
-    loadAllFeedbacks,
   ]);
 
   useEffect(() => {
-    setCurrentPage(1);
+    const handler = setTimeout(() => {
+      setSearchTerm(inputValue);
+    }, 500); // 500ms debounce
+    return () => clearTimeout(handler);
+  }, [inputValue]);
+
+  useEffect(() => {
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
   }, [searchTerm, filterStatus]);
 
   const handleToggleReview = async (id: number, isReviewed: boolean) => {
@@ -83,30 +129,30 @@ export default function AdminPage() {
       setFeedbacks((currentFeedbacks) =>
         currentFeedbacks.map((fb) => (fb.id === id ? updatedFeedback : fb))
       );
+      loadGlobalStats();
+
+      const shouldDisappear =
+        (filterStatus === "true" && !isReviewed) ||
+        (filterStatus === "false" && isReviewed);
+      if (shouldDisappear) {
+        loadFeedbacksForPage(currentPage);
+      } else {
+      }
     } catch (err) {
       setError("Failed to update feedback status");
     }
   };
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    setInputValue(e.target.value);
   };
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (isAuthenticated && user?.is_staff) {
-        loadAllFeedbacks();
-      }
-    }, 500); // 500ms debounce
-    return () => clearTimeout(handler);
-  }, [searchTerm, loadAllFeedbacks, isAuthenticated, user?.is_staff]);
 
   const handleFilterButtonClick = (status: string) => {
     setFilterStatus(status);
   };
 
   const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= totalPages) {
+    if (newPage >= 1 && newPage <= totalPages && newPage !== currentPage) {
       setCurrentPage(newPage);
     }
   };
@@ -126,9 +172,6 @@ export default function AdminPage() {
     return null;
   }
 
-  const displayedReviewedCount = feedbacks.filter((f) => f.is_reviewed).length;
-  const displayedPendingCount = feedbacks.filter((f) => !f.is_reviewed).length;
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
@@ -136,7 +179,10 @@ export default function AdminPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Panel</h1>
           <p className="text-gray-600">
-            Manage and moderate feedback. Total submissions: {totalFeedbacks}
+            Manage and moderate feedback. Total submissions:{" "}
+            {statsLoading && grandTotalSubmissions === 0
+              ? "Loading..."
+              : grandTotalSubmissions}
           </p>
         </div>
 
@@ -172,7 +218,7 @@ export default function AdminPage() {
                   id="search-feedback"
                   className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2"
                   placeholder="Search by title or content..."
-                  value={searchTerm}
+                  value={inputValue}
                   onChange={handleSearchInputChange}
                 />
               </div>
@@ -211,36 +257,34 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Stats for current view */}
+        {/* Global Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium text-gray-800">
-              Total Displayed
+              Total Submissions
             </h3>
             <p className="text-3xl font-bold text-blue-600">
-              {feedbacks.length}
+              {statsLoading ? "..." : grandTotalSubmissions}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium text-gray-800">
-              Reviewed (on this page)
+              Total Reviewed
             </h3>
             <p className="text-3xl font-bold text-green-600">
-              {displayedReviewedCount}
+              {statsLoading ? "..." : totalReviewedGlobally}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-medium text-gray-800">
-              Pending (on this page)
-            </h3>
+            <h3 className="text-lg font-medium text-gray-800">Total Pending</h3>
             <p className="text-3xl font-bold text-yellow-600">
-              {displayedPendingCount}
+              {statsLoading ? "..." : totalPendingGlobally}
             </p>
           </div>
         </div>
 
         {/* Feedback List */}
-        {loading && feedbacks.length === 0 ? (
+        {loading && feedbacks.length === 0 && currentPage === 1 ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
             <p className="mt-3 text-gray-600">Loading feedback...</p>
@@ -281,6 +325,13 @@ export default function AdminPage() {
           </div>
         )}
 
+        {loading && (feedbacks.length > 0 || currentPage > 1) && (
+          <div className="text-center py-4">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="mt-2 text-sm text-gray-500">Loading more...</p>
+          </div>
+        )}
+
         {/* Pagination Controls */}
         {totalPages > 1 && (
           <div className="mt-8 flex justify-between items-center bg-white px-4 py-3 border-t border-gray-200 sm:px-6 rounded-b-lg shadow">
@@ -293,7 +344,9 @@ export default function AdminPage() {
             </button>
             <div className="text-sm text-gray-700">
               Page <span className="font-medium">{currentPage}</span> of{" "}
-              <span className="font-medium">{totalPages}</span>
+              <span className="font-medium">{totalPages}</span> (
+              <span className="font-medium">{totalFeedbacks}</span> items match
+              current filter)
             </div>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
