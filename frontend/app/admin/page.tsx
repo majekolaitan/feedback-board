@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import FeedbackCard from "@/components/FeedbackCard";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,20 +9,30 @@ import { adminApi } from "@/lib/api";
 import { Feedback } from "@/types";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-const ITEMS_PER_PAGE = 20; // Must match backend's PAGE_SIZE
+const ITEMS_PER_PAGE = 20;
 
 export default function AdminPage() {
   const { isAuthenticated, isLoading: authIsLoading, user } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [inputValue, setInputValue] = useState(
+    () => searchParams.get("search") || ""
+  );
+  const [searchTerm, setSearchTerm] = useState(
+    () => searchParams.get("search") || ""
+  );
+  const [filterStatus, setFilterStatus] = useState(
+    () => searchParams.get("status") || "all"
+  );
+  const [currentPage, setCurrentPage] = useState(() =>
+    parseInt(searchParams.get("page") || "1", 10)
+  );
 
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const [inputValue, setInputValue] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalFeedbacks, setTotalFeedbacks] = useState(0);
 
   const [grandTotalSubmissions, setGrandTotalSubmissions] = useState(0);
@@ -35,6 +45,22 @@ export default function AdminPage() {
     [totalFeedbacks]
   );
 
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchTerm) {
+      params.set("search", searchTerm);
+    }
+    if (filterStatus && filterStatus !== "all") {
+      params.set("status", filterStatus);
+    }
+    if (currentPage > 1) {
+      params.set("page", currentPage.toString());
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [searchTerm, filterStatus, currentPage, router, pathname]);
+  // --- End Effect to update URL ---
+
   const loadFeedbacksForPage = useCallback(
     async (pageToFetch: number) => {
       if (!isAuthenticated || !user?.is_staff) return;
@@ -42,14 +68,17 @@ export default function AdminPage() {
       setLoading(true);
       setError("");
       try {
-        const params: { page: number; search?: string; is_reviewed?: string } =
-          {
-            page: pageToFetch,
-          };
-        if (searchTerm.trim()) params.search = searchTerm.trim();
-        if (filterStatus !== "all") params.is_reviewed = filterStatus;
+        const apiParams: {
+          page: number;
+          search?: string;
+          is_reviewed?: string;
+        } = {
+          page: pageToFetch,
+        };
+        if (searchTerm.trim()) apiParams.search = searchTerm.trim();
+        if (filterStatus !== "all") apiParams.is_reviewed = filterStatus;
 
-        const response = await adminApi.getAllFeedback(params);
+        const response = await adminApi.getAllFeedback(apiParams);
         setFeedbacks(response.results || []);
         setTotalFeedbacks(response.count || 0);
       } catch (err: any) {
@@ -66,6 +95,7 @@ export default function AdminPage() {
   );
 
   const loadGlobalStats = useCallback(async () => {
+    // ... (no changes here)
     if (!isAuthenticated || !user?.is_staff) return;
     setStatsLoading(true);
     try {
@@ -117,9 +147,13 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (currentPage !== 1) {
-      setCurrentPage(1);
+      const urlSearch = searchParams.get("search") || "";
+      const urlStatus = searchParams.get("status") || "all";
+      if (searchTerm !== urlSearch || filterStatus !== urlStatus) {
+        setCurrentPage(1);
+      }
     }
-  }, [searchTerm, filterStatus]);
+  }, [searchTerm, filterStatus, searchParams, currentPage]);
 
   const handleToggleReview = async (id: number, isReviewed: boolean) => {
     try {
@@ -136,7 +170,6 @@ export default function AdminPage() {
         (filterStatus === "false" && isReviewed);
       if (shouldDisappear) {
         loadFeedbacksForPage(currentPage);
-      } else {
       }
     } catch (err) {
       setError("Failed to update feedback status");
