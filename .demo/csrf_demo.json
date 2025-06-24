@@ -1,0 +1,96 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "CSRF Protection Implementation",
+  "description": "A walkthrough of how Cross-Site Request Forgery (CSRF) protection is set up and used in the project.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "Step 1: Django CSRF Middleware",
+      "description": "Backend: Django's settings.py includes 'CsrfViewMiddleware' to enable global CSRF protection.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback_board/settings.py",
+          "position": "52"
+        }
+      ]
+    },
+    {
+      "title": "Step 2: Backend Endpoint for CSRF Token",
+      "description": "Backend: A dedicated view 'get_csrf_token' in views.py provides the CSRF token to the frontend.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "87:91"
+        }
+      ]
+    },
+    {
+      "title": "Step 3: URL for CSRF Token Endpoint",
+      "description": "Backend: The '/api/csrf/' URL in urls.py maps to the 'get_csrf_token' view.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/urls.py",
+          "position": "10"
+        }
+      ]
+    },
+    {
+      "title": "Step 4: Frontend API Interceptor for CSRF",
+      "description": "Frontend: An Axios request interceptor in api.ts handles fetching and attaching the CSRF token.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "15:30"
+        }
+      ]
+    },
+    {
+      "title": "Step 5: Frontend Fetches CSRF Token",
+      "description": "Frontend: Inside the interceptor, a GET request is made to the '/api/csrf/' endpoint to retrieve the token.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "18:20"
+        }
+      ]
+    },
+    {
+      "title": "Step 6: Frontend Attaches CSRF Token to Headers",
+      "description": "Frontend: The fetched CSRF token is added to the 'X-CSRFToken' header for non-GET requests.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "23"
+        }
+      ]
+    },
+    {
+      "title": "Step 7: Backend CSRF Cookie Configuration",
+      "description": "Backend: settings.py configures CSRF cookie behavior, including trusted origins and Samesite attribute.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback_board/settings.py",
+          "position": "155:162"
+        }
+      ]
+    },
+    {
+      "title": "Step 8: Ensuring CSRF Cookie is Set",
+      "description": "Backend: The '@ensure_csrf_cookie' decorator on 'get_csrf_token' ensures Django sets the CSRF cookie in the browser.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "89"
+        }
+      ]
+    }
+  ]
+}

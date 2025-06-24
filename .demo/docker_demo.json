@@ -1,0 +1,129 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "Docker Implementation Walkthrough",
+  "description": "A demonstration of how Docker and Docker Compose are used to containerize and orchestrate the frontend and backend services of the project.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "Step 1: Orchestration with Docker Compose",
+      "description": "The 'docker-compose.yml' file defines and manages the multi-container application services (backend and frontend).",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "docker-compose.yml",
+          "position": "1"
+        }
+      ]
+    },
+    {
+      "title": "Step 2: Backend Service Definition",
+      "description": "In 'docker-compose.yml', the 'backend' service configuration specifies its build context, Dockerfile, command, volumes, and port mapping.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "docker-compose.yml",
+          "position": "2:16"
+        }
+      ]
+    },
+    {
+      "title": "Step 3: Backend Dockerfile - Base Image and Environment",
+      "description": "The 'backend/Dockerfile' starts with a Python base image, sets environment variables, and defines the working directory.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/Dockerfile",
+          "position": "1:9"
+        }
+      ]
+    },
+    {
+      "title": "Step 4: Backend Dockerfile - Installing Dependencies",
+      "description": "Python dependencies are installed by copying 'requirements.txt' and running 'pip install'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/Dockerfile",
+          "position": "11:14"
+        }
+      ]
+    },
+    {
+      "title": "Step 5: Backend Dockerfile - Application Code and Port",
+      "description": "The project code is copied into the container, and port 8000 (for Django) is exposed.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/Dockerfile",
+          "position": "16:21"
+        }
+      ]
+    },
+    {
+      "title": "Step 6: Frontend Service Definition",
+      "description": "Similarly, the 'frontend' service in 'docker-compose.yml' defines its build, command, volumes, ports, and dependency on the backend.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "docker-compose.yml",
+          "position": "27:43"
+        }
+      ]
+    },
+    {
+      "title": "Step 7: Frontend Dockerfile - Base Image and Setup",
+      "description": "The 'frontend/Dockerfile' uses a Node.js base image and sets up the working directory.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/Dockerfile",
+          "position": "1:5"
+        }
+      ]
+    },
+    {
+      "title": "Step 8: Frontend Dockerfile - Installing Dependencies",
+      "description": "'package.json' and 'package-lock.json' are copied to install Node.js dependencies using 'npm install'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/Dockerfile",
+          "position": "7:17"
+        }
+      ]
+    },
+    {
+      "title": "Step 9: Frontend Dockerfile - Application Code and Port",
+      "description": "The Next.js application code is copied, and port 3000 is exposed for the frontend development server.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/Dockerfile",
+          "position": "19:24"
+        }
+      ]
+    },
+    {
+      "title": "Step 10: Service Startup and Dependencies",
+      "description": "'docker-compose.yml' specifies commands to run services (e.g., migrations and runserver for backend, npm run dev for frontend) and manages startup order with 'depends_on'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "docker-compose.yml",
+          "position": "7:9"
+        }
+      ]
+    },
+    {
+      "title": "Step 11: Frontend Dependency on Backend",
+      "description": "The 'depends_on' key in the frontend service ensures the backend service is started before the frontend.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "docker-compose.yml",
+          "position": "42:43"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,228 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "Feedback CRUD Operations",
+  "description": "A walkthrough of Create, Read (Public & Admin), and Update operations for Feedback items.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "C: Create Feedback - 1. Form Submission (Frontend)",
+      "description": "User fills and submits the FeedbackForm on the public page.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackForm.tsx",
+          "position": "49:76"
+        }
+      ]
+    },
+    {
+      "title": "C: Create Feedback - 2. Page Handler (Frontend)",
+      "description": "HomePage's handleSubmitFeedback calls the API submission function.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "55"
+        }
+      ]
+    },
+    {
+      "title": "C: Create Feedback - 3. API Call (Frontend)",
+      "description": "feedbackApi.submitFeedback sends a POST request to the backend.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "40:53"
+        }
+      ]
+    },
+    {
+      "title": "C: Create Feedback - 4. URL Routing (Backend)",
+      "description": "Django routes POST '/api/feedback/' to FeedbackListCreateView.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/urls.py",
+          "position": "5"
+        }
+      ]
+    },
+    {
+      "title": "C: Create Feedback - 5. View Logic (Backend)",
+      "description": "FeedbackListCreateView uses FeedbackSerializer to create the object.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "20:21"
+        }
+      ]
+    },
+    {
+      "title": "C: Create Feedback - 6. Serializer & Model (Backend)",
+      "description": "FeedbackSerializer validates data and saves the new Feedback model instance.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/serializers.py",
+          "position": "5:9"
+        }
+      ]
+    },
+    {
+      "title": "R: Read Public Feedback (List) - 1. Page Load (Frontend)",
+      "description": "HomePage's loadFeedbacks fetches public, reviewed feedback.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "32"
+        }
+      ]
+    },
+    {
+      "title": "R: Read Public Feedback (List) - 2. API Call (Frontend)",
+      "description": "feedbackApi.getPublicFeedback requests data from '/api/feedback/'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "33:38"
+        }
+      ]
+    },
+    {
+      "title": "R: Read Public Feedback (List) - 3. View Logic (Backend)",
+      "description": "FeedbackListCreateView's get_queryset filters for reviewed feedback.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "17:18"
+        }
+      ]
+    },
+    {
+      "title": "R: Read Admin Feedback (List) - 1. Admin Page Load (Frontend)",
+      "description": "AdminPage's loadFeedbacksForPage fetches all feedback for admins.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "81"
+        }
+      ]
+    },
+    {
+      "title": "R: Read Admin Feedback (List) - 2. API Call (Frontend)",
+      "description": "adminApi.getAllFeedback requests data from '/api/admin/feedback/'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "76:102"
+        }
+      ]
+    },
+    {
+      "title": "R: Read Admin Feedback (List) - 3. URL Routing (Backend)",
+      "description": "Django routes GET '/api/admin/feedback/' to AdminFeedbackListView.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/urls.py",
+          "position": "12"
+        }
+      ]
+    },
+    {
+      "title": "R: Read Admin Feedback (List) - 4. View Logic (Backend)",
+      "description": "AdminFeedbackListView provides all feedback, with filtering capabilities.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "60:73"
+        }
+      ]
+    },
+    {
+      "title": "U: Update Feedback (Toggle Review) - 1. UI Action (Frontend)",
+      "description": "Admin clicks 'Mark as Reviewed/Unreviewed' on FeedbackCard.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackCard.tsx",
+          "position": "48:57"
+        }
+      ]
+    },
+    {
+      "title": "U: Update Feedback (Toggle Review) - 2. Page Handler (Frontend)",
+      "description": "AdminPage's handleToggleReview calls the update API.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "160"
+        }
+      ]
+    },
+    {
+      "title": "U: Update Feedback (Toggle Review) - 3. API Call (Frontend)",
+      "description": "adminApi.updateFeedback sends a PATCH request to modify review status.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "104:110"
+        }
+      ]
+    },
+    {
+      "title": "U: Update Feedback (Toggle Review) - 4. URL Routing (Backend)",
+      "description": "Django routes PATCH '/api/admin/feedback/<id>/' to AdminFeedbackUpdateView.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/urls.py",
+          "position": "13"
+        }
+      ]
+    },
+    {
+      "title": "U: Update Feedback (Toggle Review) - 5. View Logic (Backend)",
+      "description": "AdminFeedbackUpdateView handles the PATCH request for a specific feedback item.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "75:85"
+        }
+      ]
+    },
+    {
+      "title": "U: Update Feedback (Toggle Review) - 6. Serializer (Backend)",
+      "description": "AdminFeedbackSerializer validates the 'is_reviewed' field for update.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/serializers.py",
+          "position": "11:15"
+        }
+      ]
+    },
+    {
+      "title": "U: Update Feedback (Toggle Review) - 7. Model Save Logic (Backend)",
+      "description": "Feedback model's save method automatically updates 'reviewed_at'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/models.py",
+          "position": "17:22"
+        }
+      ]
+    }
+  ]
+}

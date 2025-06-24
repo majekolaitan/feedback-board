@@ -1,0 +1,140 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "Frontend Integration Walkthrough",
+  "description": "Demonstrates how various frontend parts like components, API services, context, and routing are integrated.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "Step 1: Application Root Layout",
+      "description": "The main layout wraps all pages, providing global styles and context providers like AuthProvider.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/layout.tsx",
+          "position": "31"
+        }
+      ]
+    },
+    {
+      "title": "Step 2: Global State (AuthContext)",
+      "description": "AuthProvider in AuthContext.tsx makes authentication state (user, isAuthenticated, login/logout functions) available to the app.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/contexts/AuthContext.tsx",
+          "position": "91"
+        }
+      ]
+    },
+    {
+      "title": "Step 3: Navigation Component",
+      "description": "Navigation.tsx uses 'useAuth' hook to access auth state and conditionally renders links (e.g., Login vs Admin/Logout).",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/Navigation.tsx",
+          "position": "8,36:61"
+        }
+      ]
+    },
+    {
+      "title": "Step 4: Page Component (HomePage)",
+      "description": "HomePage (app/page.tsx) fetches public feedback using an API service and manages local page state.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "32"
+        }
+      ]
+    },
+    {
+      "title": "Step 5: API Service Layer (api.ts)",
+      "description": "lib/api.ts centralizes API calls. 'feedbackApi.getPublicFeedback' fetches data from the backend.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "33:38"
+        }
+      ]
+    },
+    {
+      "title": "Step 6: Rendering Data with Reusable Components",
+      "description": "HomePage maps over fetched 'feedbacks' and uses the FeedbackCard component to display each item.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "163:165"
+        }
+      ]
+    },
+    {
+      "title": "Step 7: Reusable UI (FeedbackCard.tsx)",
+      "description": "FeedbackCard.tsx is a presentational component that takes feedback data as a prop and renders its details.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackCard.tsx",
+          "position": "23:73"
+        }
+      ]
+    },
+    {
+      "title": "Step 8: Form Component (FeedbackForm.tsx)",
+      "description": "FeedbackForm.tsx handles user input for new feedback, local validation, and calls an 'onSubmit' prop.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackForm.tsx",
+          "position": "49:76"
+        }
+      ]
+    },
+    {
+      "title": "Step 9: Form Submission Handling on Page",
+      "description": "HomePage provides 'handleSubmitFeedback' to FeedbackForm, which calls 'feedbackApi.submitFeedback'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "55,116"
+        }
+      ]
+    },
+    {
+      "title": "Step 10: Page-Specific Logic (AdminPage)",
+      "description": "AdminPage (app/admin/page.tsx) demonstrates more complex state, data fetching with params, and role-based access control using AuthContext.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "64:95"
+        }
+      ]
+    },
+    {
+      "title": "Step 11: Client-Side Routing (LoginPage)",
+      "description": "LoginPage (app/login/page.tsx) uses 'useRouter' from Next.js for navigation after login and checks auth state to redirect if already logged in.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/login/page.tsx",
+          "position": "14:18,22"
+        }
+      ]
+    },
+    {
+      "title": "Step 12: Type Definitions for Data Integrity",
+      "description": "frontend/types/index.ts defines shared data structures (e.g., Feedback, User) used across the frontend for consistency and type safety.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/types/index.ts",
+          "position": "1:8"
+        }
+      ]
+    }
+  ]
+}

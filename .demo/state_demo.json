@@ -1,0 +1,162 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "State Management Walkthrough",
+  "description": "Demonstrates how state is managed across the frontend application, including local component state, effects, context, and derived state.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "Step 1: Local Component State (useState)",
+      "description": "LoginForm.tsx uses 'useState' to manage input values (username, password) and local error messages.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/LoginForm.tsx",
+          "position": "13:15"
+        }
+      ]
+    },
+    {
+      "title": "Step 2: State Update and Form Submission",
+      "description": "LoginForm.tsx updates state on input change and uses current state in 'handleSubmit'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/LoginForm.tsx",
+          "position": "59:60"
+        }
+      ]
+    },
+    {
+      "title": "Step 3: Managing Complex Local State (useState)",
+      "description": "AdminPage.tsx uses multiple 'useState' hooks for managing search terms, filters, current page, fetched data (feedbacks), loading status, and errors.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "20:36"
+        }
+      ]
+    },
+    {
+      "title": "Step 4: Effects for Data Fetching (useEffect)",
+      "description": "AdminPage.tsx uses 'useEffect' to fetch feedback data when 'currentPage', 'searchTerm', or 'filterStatus' (via 'loadFeedbacksForPage' dependencies) change, or when authentication status is confirmed.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "129:139"
+        }
+      ]
+    },
+    {
+      "title": "Step 5: Effects for Debouncing (useEffect)",
+      "description": "AdminPage.tsx uses 'useEffect' with a timeout to debounce the 'searchTerm' update based on 'inputValue', optimizing API calls.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "141:146"
+        }
+      ]
+    },
+    {
+      "title": "Step 6: Effects for Prop-driven State (useEffect)",
+      "description": "FeedbackForm.tsx uses 'useEffect' to synchronize 'apiErrors' prop with its internal 'errors' state.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackForm.tsx",
+          "position": "22:47"
+        }
+      ]
+    },
+    {
+      "title": "Step 7: Global State Definition (AuthContext)",
+      "description": "AuthContext.tsx defines a context for global authentication state, managing 'user', 'isLoading', and deriving 'isAuthenticated'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/contexts/AuthContext.tsx",
+          "position": "37:38"
+        }
+      ]
+    },
+    {
+      "title": "Step 8: Providing Global State (AuthProvider)",
+      "description": "The 'AuthProvider' component wraps the application in RootLayout (layout.tsx) to make the auth state available globally.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/layout.tsx",
+          "position": "31"
+        }
+      ]
+    },
+    {
+      "title": "Step 9: Consuming Global State (useAuth)",
+      "description": "Navigation.tsx uses the 'useAuth' custom hook to access 'isAuthenticated', 'user', and 'logout' from AuthContext for conditional rendering.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/Navigation.tsx",
+          "position": "8"
+        }
+      ]
+    },
+    {
+      "title": "Step 10: Conditional Logic with Global State",
+      "description": "AdminPage.tsx uses 'isAuthenticated' and 'user.is_staff' from 'useAuth' to protect the route and fetch data.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "15"
+        }
+      ]
+    },
+    {
+      "title": "Step 11: Derived State (useMemo)",
+      "description": "AdminPage.tsx uses 'useMemo' to calculate 'totalPages' based on 'totalFeedbacks', optimizing re-renders.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "43:46"
+        }
+      ]
+    },
+    {
+      "title": "Step 12: Memoized Callbacks (useCallback)",
+      "description": "AdminPage.tsx uses 'useCallback' for 'loadFeedbacksForPage' and 'loadGlobalStats' to memoize these functions, preventing unnecessary re-creations and optimizing child component re-renders if passed as props.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "64:95"
+        }
+      ]
+    },
+    {
+      "title": "Step 13: Initial State from URL (useSearchParams)",
+      "description": "AdminPage.tsx initializes 'searchTerm', 'filterStatus', and 'currentPage' state from URL query parameters using 'useSearchParams'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "20:31"
+        }
+      ]
+    },
+    {
+      "title": "Step 14: Updating URL from State (useEffect & useRouter)",
+      "description": "AdminPage.tsx uses 'useEffect' to update the browser URL when 'searchTerm', 'filterStatus', or 'currentPage' change, reflecting the current state.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "48:61"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "Access Control Implementation",
+  "description": "A walkthrough demonstrating how access control (public, authenticated, admin/staff) is implemented in the project.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "Step 1: Public Access - Frontend Route",
+      "description": "Frontend: The main page (HomePage) is accessible to all users, including anonymous ones.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "12"
+        }
+      ]
+    },
+    {
+      "title": "Step 2: Public Access - Backend API",
+      "description": "Backend: The API endpoint for listing/creating public feedback allows any user via 'AllowAny' permission.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "14"
+        }
+      ]
+    },
+    {
+      "title": "Step 3: Conditional UI - Navigation Links",
+      "description": "Frontend: Navigation.tsx dynamically shows 'Admin Login' or 'Admin Panel' based on authentication state.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/Navigation.tsx",
+          "position": "36:61"
+        }
+      ]
+    },
+    {
+      "title": "Step 4: Admin Route Protection (Frontend) - Auth Check",
+      "description": "Frontend: AdminPage.tsx uses useAuth() to check if a user is authenticated before allowing access.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "121"
+        }
+      ]
+    },
+    {
+      "title": "Step 5: Admin Route Protection (Frontend) - Staff Check",
+      "description": "Frontend: AdminPage.tsx further checks if the authenticated user has 'is_staff' privileges.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "121"
+        }
+      ]
+    },
+    {
+      "title": "Step 6: Admin API Protection (Backend) - Authentication",
+      "description": "Backend: Admin-specific API views like AdminFeedbackListView require 'IsAuthenticated' permission.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "61"
+        }
+      ]
+    },
+    {
+      "title": "Step 7: Admin API Protection (Backend) - Staff Authorization",
+      "description": "Backend: AdminFeedbackListView explicitly checks 'request.user.is_staff' in its dispatch method.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "69:73"
+        }
+      ]
+    },
+    {
+      "title": "Step 8: Login Validation - Staff Check",
+      "description": "Backend: During login, LoginSerializer.py ensures the user is an active staff member.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/serializers.py",
+          "position": "37:38"
+        }
+      ]
+    },
+    {
+      "title": "Step 9: Storing Staff Status (Frontend)",
+      "description": "Frontend: AuthContext.tsx stores the user object, including 'is_staff', after successful login or auth check.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/contexts/AuthContext.tsx",
+          "position": "43:45"
+        }
+      ]
+    },
+    {
+      "title": "Step 10: Backend Session Authentication",
+      "description": "Backend: settings.py configures Django REST Framework to use SessionAuthentication for most requests.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback_board/settings.py",
+          "position": "132:134"
+        }
+      ]
+    },
+    {
+      "title": "Step 11: Backend Auth Check Endpoint",
+      "description": "Backend: The 'check_auth' view determines if a user is authenticated AND staff for session persistence.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "49"
+        }
+      ]
+    },
+    {
+      "title": "Step 12: Frontend Login Page Redirect",
+      "description": "Frontend: LoginPage.tsx redirects authenticated users (presumably staff) away from the login form to '/admin'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/login/page.tsx",
+          "position": "14:18"
+        }
+      ]
+    }
+  ]
+}

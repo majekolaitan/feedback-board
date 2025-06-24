@@ -1,0 +1,129 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "Form Validation Walkthrough",
+  "description": "Demonstrates client-side and server-side form validation for feedback submission.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "Step 1: Feedback Form UI",
+      "description": "Frontend: User interacts with input fields in FeedbackForm.tsx.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackForm.tsx",
+          "position": "90:146"
+        }
+      ]
+    },
+    {
+      "title": "Step 2: Client-Side Validation Logic",
+      "description": "Frontend: Basic checks (e.g., empty fields) in handleSubmit.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackForm.tsx",
+          "position": "51:57"
+        }
+      ]
+    },
+    {
+      "title": "Step 3: Displaying Client-Side Errors",
+      "description": "Frontend: JSX in FeedbackForm.tsx renders local validation errors.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackForm.tsx",
+          "position": "112:116"
+        }
+      ]
+    },
+    {
+      "title": "Step 4: Form Submission Trigger",
+      "description": "Frontend: If client-side validation passes, onSubmit prop is called.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackForm.tsx",
+          "position": "67"
+        }
+      ]
+    },
+    {
+      "title": "Step 5: API Call for Submission",
+      "description": "Frontend: HomePage calls feedbackApi.submitFeedback to send data.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "55"
+        }
+      ]
+    },
+    {
+      "title": "Step 6: Backend Model Constraints",
+      "description": "Backend: Feedback model defines field constraints (e.g., max_length).",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/models.py",
+          "position": "5:6"
+        }
+      ]
+    },
+    {
+      "title": "Step 7: Backend Serializer Validation",
+      "description": "Backend: FeedbackSerializer validates incoming data against the model.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/serializers.py",
+          "position": "5:9"
+        }
+      ]
+    },
+    {
+      "title": "Step 8: Backend View Processes Submission",
+      "description": "Backend: FeedbackListCreateView uses the serializer for validation.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "15"
+        }
+      ]
+    },
+    {
+      "title": "Step 9: Frontend Catches API Errors",
+      "description": "Frontend: HomePage catches errors from API, including validation failures.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "60:68"
+        }
+      ]
+    },
+    {
+      "title": "Step 10: Processing API Errors in Form",
+      "description": "Frontend: FeedbackForm useEffect processes apiErrors prop.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackForm.tsx",
+          "position": "22:47"
+        }
+      ]
+    },
+    {
+      "title": "Step 11: Displaying API-Driven Errors",
+      "description": "Frontend: FeedbackForm displays general or field-specific API errors.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/FeedbackForm.tsx",
+          "position": "84:88"
+        }
+      ]
+    }
+  ]
+}

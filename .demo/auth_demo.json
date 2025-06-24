@@ -1,0 +1,173 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "User Authentication Flow",
+  "description": "A walkthrough of how user authentication is implemented in the project, from login form to session management and protected routes.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "Step 1: User Accesses Login Page",
+      "description": "Frontend: User navigates to '/login', rendering LoginPage with LoginForm.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/login/page.tsx",
+          "position": "42"
+        }
+      ]
+    },
+    {
+      "title": "Step 2: Login Form Submission",
+      "description": "Frontend: LoginForm.tsx handles input and calls 'onLogin' prop on submit.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/components/LoginForm.tsx",
+          "position": "27"
+        }
+      ]
+    },
+    {
+      "title": "Step 3: Calling AuthContext Login",
+      "description": "Frontend: LoginPage's 'handleLogin' invokes 'login' from AuthContext.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/login/page.tsx",
+          "position": "20:23"
+        }
+      ]
+    },
+    {
+      "title": "Step 4: AuthContext - Initiating Authentication",
+      "description": "Frontend: AuthContext.tsx's 'login' function calls 'authApi.login'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/contexts/AuthContext.tsx",
+          "position": "58"
+        }
+      ]
+    },
+    {
+      "title": "Step 5: API Library - Request to Backend",
+      "description": "Frontend: api.ts's 'authApi.login' sends POST request to '/api/login/'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "57:62"
+        }
+      ]
+    },
+    {
+      "title": "Step 6: Backend - Routing Login Request",
+      "description": "Backend: Django's urls.py maps '/api/login/' to 'admin_login' view.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/urls.py",
+          "position": "7"
+        }
+      ]
+    },
+    {
+      "title": "Step 7: Backend - Login View Processing",
+      "description": "Backend: views.py's 'admin_login' view uses LoginSerializer for validation.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "26:27"
+        }
+      ]
+    },
+    {
+      "title": "Step 8: Backend - Serializer Validation",
+      "description": "Backend: LoginSerializer authenticates credentials and checks staff status.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/serializers.py",
+          "position": "21:41"
+        }
+      ]
+    },
+    {
+      "title": "Step 9: Backend - Establishing User Session",
+      "description": "Backend: Django's 'login()' function creates a user session on success.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "29"
+        }
+      ]
+    },
+    {
+      "title": "Step 10: Backend - Sending Success Response",
+      "description": "Backend: 'admin_login' view returns user details in JSON response.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "30:37"
+        }
+      ]
+    },
+    {
+      "title": "Step 11: Frontend - AuthContext Receives User",
+      "description": "Frontend: AuthContext's 'login' function sets user state from API response.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/contexts/AuthContext.tsx",
+          "position": "59:61"
+        }
+      ]
+    },
+    {
+      "title": "Step 12: Frontend - Auth State Provided",
+      "description": "Frontend: AuthContext defines context value (user, isAuthenticated) via AuthProvider.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/contexts/AuthContext.tsx",
+          "position": "82:89"
+        }
+      ]
+    },
+    {
+      "title": "Step 13: Frontend - Accessing Protected Routes",
+      "description": "Frontend: AdminPage uses 'useAuth' to check auth and redirects if needed.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "122:123"
+        }
+      ]
+    },
+    {
+      "title": "Step 14: Frontend - Initial Auth Check on Load",
+      "description": "Frontend: AuthContext's 'checkAuth' verifies existing session on app load.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/contexts/AuthContext.tsx",
+          "position": "78:80"
+        }
+      ]
+    },
+    {
+      "title": "Step 15: Backend - Verifying Existing Session",
+      "description": "Backend: 'check_auth' view validates session from request for '/api/auth/check/'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "46:58"
+        }
+      ]
+    }
+  ]
+}

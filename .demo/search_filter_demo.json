@@ -1,0 +1,140 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "Search and Filter Functionality",
+  "description": "A walkthrough of how search and filtering are implemented on the Admin Feedback page.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "Step 1: Admin Page - Search Input",
+      "description": "Frontend: User types into the search input field on the Admin Page.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "248:257"
+        }
+      ]
+    },
+    {
+      "title": "Step 2: Admin Page - Handling Search Input Change",
+      "description": "Frontend: 'handleSearchInputChange' updates the 'inputValue' state.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "179:181"
+        }
+      ]
+    },
+    {
+      "title": "Step 3: Admin Page - Debouncing Search Term",
+      "description": "Frontend: A useEffect hook with a timeout debounces 'inputValue' to update 'searchTerm', triggering data fetch.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "141:147"
+        }
+      ]
+    },
+    {
+      "title": "Step 4: Admin Page - Filter Buttons",
+      "description": "Frontend: User clicks a filter button (All, Reviewed, Pending).",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "263:288"
+        }
+      ]
+    },
+    {
+      "title": "Step 5: Admin Page - Handling Filter Change",
+      "description": "Frontend: 'handleFilterButtonClick' updates the 'filterStatus' state.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "183:185"
+        }
+      ]
+    },
+    {
+      "title": "Step 6: Admin Page - Updating URL Parameters",
+      "description": "Frontend: A useEffect hook updates the browser URL with current search, filter, and page.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "48:62"
+        }
+      ]
+    },
+    {
+      "title": "Step 7: Admin Page - Loading Feedback with Filters",
+      "description": "Frontend: 'loadFeedbacksForPage' constructs API parameters including 'search' and 'is_reviewed'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "78:79"
+        }
+      ]
+    },
+    {
+      "title": "Step 8: API Library - Constructing Query",
+      "description": "Frontend: 'adminApi.getAllFeedback' in api.ts builds the GET request with query parameters.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "83:96"
+        }
+      ]
+    },
+    {
+      "title": "Step 9: Backend - Routing Admin Feedback List",
+      "description": "Backend: Django's urls.py maps the '/admin/feedback/' API endpoint to the 'AdminFeedbackListView'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/urls.py",
+          "position": "12"
+        }
+      ]
+    },
+    {
+      "title": "Step 10: Backend - View with Filter Backends",
+      "description": "Backend: 'AdminFeedbackListView' in views.py uses DRF's 'SearchFilter' and 'DjangoFilterBackend'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "65"
+        }
+      ]
+    },
+    {
+      "title": "Step 11: Backend - Defining Search and Filter Fields",
+      "description": "Backend: 'search_fields' (for text search) and 'filterset_fields' (for 'is_reviewed') are configured in the view.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "66:67"
+        }
+      ]
+    },
+    {
+      "title": "Step 12: Backend - Model Field for Filtering",
+      "description": "Backend: The 'is_reviewed' BooleanField on the Feedback model is used by DjangoFilterBackend.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/models.py",
+          "position": "7"
+        }
+      ]
+    }
+  ]
+}

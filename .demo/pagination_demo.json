@@ -1,0 +1,162 @@
+{
+  "$schema": "https://demotime.show/demo-time.schema.json",
+  "title": "Pagination Implementation",
+  "description": "A walkthrough of how pagination is implemented for feedback lists in both the admin and public sections.",
+  "version": 2,
+  "demos": [
+    {
+      "title": "Step 1: Backend - Global Pagination Settings",
+      "description": "Backend: Django REST Framework is configured with a default pagination class and page size in settings.py.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback_board/settings.py",
+          "position": "138:139"
+        }
+      ]
+    },
+    {
+      "title": "Step 2: Backend - Public Feedback View",
+      "description": "Backend: FeedbackListCreateView in views.py inherits from ListCreateAPIView, which automatically applies pagination.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "13"
+        }
+      ]
+    },
+    {
+      "title": "Step 3: Backend - Admin Feedback View",
+      "description": "Backend: AdminFeedbackListView in views.py inherits from ListAPIView, also applying pagination automatically.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "backend/feedback/views.py",
+          "position": "60"
+        }
+      ]
+    },
+    {
+      "title": "Step 4: Frontend - API Call for Public Feedback",
+      "description": "Frontend: api.ts constructs the request for public feedback, including the 'page' parameter.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "36"
+        }
+      ]
+    },
+    {
+      "title": "Step 5: Frontend - Public Page State & Logic",
+      "description": "Frontend: HomePage (page.tsx) manages 'currentPage' state and 'totalPages' calculation.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "20:26"
+        }
+      ]
+    },
+    {
+      "title": "Step 6: Frontend - Loading Public Feedback for Page",
+      "description": "Frontend: 'loadFeedbacks' function in HomePage fetches data for the current page.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "32"
+        }
+      ]
+    },
+    {
+      "title": "Step 7: Frontend - Public Page Change Handler",
+      "description": "Frontend: 'handlePageChange' in HomePage updates 'currentPage' state, triggering a data reload.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "74:78"
+        }
+      ]
+    },
+    {
+      "title": "Step 8: Frontend - Public Page Pagination UI",
+      "description": "Frontend: HomePage renders pagination controls (Previous/Next buttons, page info).",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/page.tsx",
+          "position": "170:191"
+        }
+      ]
+    },
+    {
+      "title": "Step 9: Frontend - API Call for Admin Feedback",
+      "description": "Frontend: api.ts's adminApi.getAllFeedback passes the 'page' parameter in its request.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/lib/api.ts",
+          "position": "76"
+        }
+      ]
+    },
+    {
+      "title": "Step 10: Frontend - Admin Page State & Logic",
+      "description": "Frontend: AdminPage (admin/page.tsx) manages 'currentPage' and 'totalFeedbacks'.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "29:31"
+        }
+      ]
+    },
+    {
+      "title": "Step 11: Frontend - Loading Admin Feedback for Page",
+      "description": "Frontend: 'loadFeedbacksForPage' in AdminPage fetches paginated data for admins.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "76"
+        }
+      ]
+    },
+    {
+      "title": "Step 12: Frontend - Admin Page Change Handler",
+      "description": "Frontend: 'handlePageChange' in AdminPage updates 'currentPage', triggering a data reload.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "187:191"
+        }
+      ]
+    },
+    {
+      "title": "Step 13: Frontend - Admin Page Pagination UI",
+      "description": "Frontend: AdminPage renders pagination controls, similar to the public page.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "369:392"
+        }
+      ]
+    },
+    {
+      "title": "Step 14: Frontend - Consistent ITEMS_PER_PAGE",
+      "description": "Frontend: Both public and admin pages use a consistent ITEMS_PER_PAGE constant, aligning with backend settings.",
+      "steps": [
+        {
+          "action": "highlight",
+          "path": "frontend/app/admin/page.tsx",
+          "position": "12"
+        }
+      ]
+    }
+  ]
+}
